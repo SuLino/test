@@ -5,8 +5,8 @@ package org.example.servlet;
 
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.ibatis.session.*;
+import org.example.dao.studentdao;
 import org.example.entity.student;
 import org.example.util.MyBatisUtil;
 
@@ -14,11 +14,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author admin
@@ -31,42 +28,50 @@ public class StudentListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html;charset=UTF-8");
+        String pageTotal="page";
         SqlSession session = MyBatisUtil.getSession();
         String studentName = req.getParameter("studentName");
         String pageno = req.getParameter("pageNo");
+        pageTotal= req.getParameter("pageTotal");
         if (pageno!=null) {
             int pageNo = Integer.parseInt(pageno);
-            show(req, resp, session, pageNo);
+            show(resp, session, pageNo);
         }
         if(studentName!=null&&!studentName.equals(""))
-        search(req, resp,session,studentName);
+        search(resp,session,studentName);
+        if(pageTotal!=null&&pageTotal.equals("pagetotal"))
+            getPage(resp,session);
         MyBatisUtil.closeSession(session);
     }
 
-    void search(HttpServletRequest req, HttpServletResponse resp,SqlSession session,String studentName) throws IOException {
+    void getPage(HttpServletResponse resp,SqlSession session) throws IOException {
+        studentdao mapper = session.getMapper(studentdao.class);
+        int count = mapper.count();
+        if(count%10>0)
+            count=count/10+1;
+        else count/=10;
+        resp.getWriter().print(count);
+    }
+    void search(HttpServletResponse resp,SqlSession session,String studentName) throws IOException {
         List<student> list;
         List<student> list2=new ArrayList<>();
         System.out.println(studentName);
-        list=session.selectList("org.example.dao.studentdao.list1");
-        for(int i=0;i<list.size();i++)
-            if (list.get(i).getName().equals(studentName))
-                list2.add(list.get(i));
+        list=session.selectList("org.example.dao.studentdao.list2");
+        for (org.example.entity.student student : list)
+            if (student.getName().equals(studentName))
+                list2.add(student);
         Gson gson = new Gson();
         String s = gson.toJson(list2);
-        System.out.println(s);
         resp.getWriter().write(s);
+        resp.getWriter().flush();
     }
 
-    void show(HttpServletRequest req, HttpServletResponse resp,SqlSession session,Integer pageNo) throws IOException {
-        List<student> list;
-        List<student> list2=new ArrayList<>();
-        list=session.selectList("org.example.dao.studentdao.list1");
-        for(int i=(pageNo-1)*10;i<pageNo*10;i++)
-            if (i <list.size())
-                list2.add(list.get(i));
+    void show(HttpServletResponse resp,SqlSession session,Integer pageNo) throws IOException {
+        studentdao mapper = session.getMapper(studentdao.class);
+        pageNo=(pageNo-1)*10;
+        List<student> list = mapper.list1(pageNo, 10);
         Gson gson = new Gson();
-        String s = gson.toJson(list2);
-        System.out.println(s);
+        String s = gson.toJson(list);
         resp.getWriter().write(s);
     }
 }

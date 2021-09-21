@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.Random;
 
 /**
@@ -27,6 +26,10 @@ public class StudentAddServlet extends HttpServlet {
         req.setCharacterEncoding("utf-8");
         SqlSession session = MyBatisUtil.getSession();
         int count = session.selectOne("org.example.dao.studentdao.count");
+        if(count>80){
+            resp.getWriter().write("非法操作");
+            return;
+        }
         Random random = new Random();
         for(int i=1;i<=10;i++){
             int i1 = random.nextInt(i+10);
@@ -35,7 +38,12 @@ public class StudentAddServlet extends HttpServlet {
                 session.commit();
         }
 
-            MyBatisUtil.closeSession(session);
-        resp.getWriter().write("插入成功");
+        if(count%10>0)
+            count=count/10+2;
+        else
+            count=count/10+1;
+        System.out.println(count);
+        MyBatisUtil.closeSession(session);
+        resp.getWriter().print(count);
     }
 }

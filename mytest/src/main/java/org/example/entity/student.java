@@ -14,9 +14,22 @@ public class student {
     private String name;
     private java.sql.Date birth;
     private  Integer clazzId;
-    private String cname;
+    private String Cname;
+
 
     public student() {
+    }
+
+    public student(Integer clazzId) {
+        this.clazzId = clazzId;
+    }
+
+    public student(Integer id, String name, Date birth, Integer clazzId, String cname) {
+        this.id = id;
+        this.name = name;
+        this.birth = birth;
+        this.clazzId = clazzId;
+        this.Cname = cname;
     }
 
     public student(Integer id, String name, Date birth, Integer clazzId) {
@@ -25,16 +38,14 @@ public class student {
         this.birth = birth;
         this.clazzId = clazzId;
     }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-
+    
     public Integer getId() {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -60,6 +71,14 @@ public class student {
         this.clazzId = clazzId;
     }
 
+    public String getCname() {
+        return Cname;
+    }
+
+    public void setCname(String cname) {
+        this.Cname = cname;
+    }
+
     @Override
     public String toString() {
         return "student{" +
@@ -67,6 +86,7 @@ public class student {
                 ", name='" + name + '\'' +
                 ", birth=" + birth +
                 ", clazzId=" + clazzId +
+                ", Cname='" + Cname +
                 '}';
     }
 }

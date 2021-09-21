@@ -3,17 +3,16 @@
                 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.dao.studentdao">
-  <insert id="add">
-    insert into student(id,name,birth,clazz_id)values(#{id},#{name},#{birth},#{clazzId});
+  <insert id="add"># 向数据库添加学生
+      insert into student(id,name,birth,clazz_id)values(#{id},#{name},#{birth},#{clazzId});
   </insert>
-  <select id="list1" resultType="org.example.entity.student">
-    select id,name,birth,clazz_id from student
+  <select id="list1" resultType="org.example.entity.student"># 查询最多10条数据显示在页面上
+      select s.id ,s.name ,s.birth,clazz_id,c.name as Cname from student s left join clazz c on c.id= s.clazz_id limit #{param1},#{param2}
   </select>
-  <select id="list2" resultType="org.example.entity.student">
-#     select id,name,birth,clazz_id from student limit #{pageNo},#{pageSize}
-    # select s.id ,s.name ,s.birth ,c.name from student s left join clazz c on c.id= s.clazz_id
+  <select id="list2" resultType="org.example.entity.student"># 根据姓名查询并输出在页面上
+      select s.id ,s.name ,s.birth,clazz_id,c.name as Cname from student s left join clazz c on c.id= s.clazz_id
 </select>
-  <select id="count" resultType="java.lang.Integer">
+    <select id="count" resultType="integer"># 根据姓名查询并输出在页面上
     select count(*) from student
-  </select>
+    </select>
 </mapper>

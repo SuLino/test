@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.example.entity.student;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface studentdao {
     //查询一个学生
      void add(student s);
     // name 为要模糊查找的学生姓名，pageNo 为页号，pageSize 为每页行数
-     List<student> list1(String name, int pageNo, int pageSize);
-    List<student> list2(int pageNo,int pageSize);
+     List<student> list1(int pageNo,int pageSize);
+    List<student> list2(student s);
     int count();
 }

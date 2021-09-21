@@ -22,7 +22,7 @@
         height: 10px;
         text-align: center;
     }
-    .btn{
+    .span{
         float: right;
     }
     #btn1{
@@ -36,21 +36,35 @@
 
     $(function(){
             $.get("http://localhost:8080/sls",{pageNo: "1"}, function (data) {showForm(data)},"json")
+        $.get("http://localhost:8080/sls",{pageTotal: "pagetotal"}, function (data) {createButton(data)})
         })
     function a(i) {
+        // $("#"+i).css("background-color","#056bd9");
         $.get("http://localhost:8080/sls",{pageNo: i}, function (data) {showForm(data)},"json")
+    }
+    function createButton(data) {
+        for (let i=1; i<=data; i++){
+            let btn='<button id="'+i+'" onclick="a('+i+')">'+i+'</button>'
+            $(".span").append(btn)
+        }
+        // let btn='<button id="2" onclick="a(2)">'+i+'</button>'
     }
         function showForm(data){
         $("#tableS tr:not(:first)").empty();
             for (let i=0; i<data.length; i++) {
                     let tr = '<td>' + data[i].id + '</td>' + '<td>' + data[i].name + '</td>'
-                        + '<td>' + data[i].birth + '</td>' + '<td>' + data[i].clazzId + '</td>';
+                        + '<td>' + data[i].birth + '</td>' + '<td>' + data[i].Cname + '</td>';
                     $("#tableS").append('<tr>' + tr + '</tr>')
                 }
             }
     function submits() {
         $.get("http://localhost:8080/sdt",function (data) {
-            alert(data)
+            if (data==="非法操作"){
+                alert("非法操作")
+            }else {
+                let btn = '<button id="' + data + '" onclick="a(' + data + ')">' + data + '</button>'
+                $(".span").append(btn)
+            }
         })
 
     }
@@ -81,15 +95,7 @@
 
     </table>
 <br/>
-<span class="btn">
-<%--   <%for(int i=0;i<(Integer)request.getAttribute("pageTotal");i++){%>--%>
-    <button onclick="a(1)">1</button>
-    <button onclick="a(2)">2</button>
-    <button onclick="a(3)">3</button>
-    <button onclick="a(4)">4</button>
-    <button onclick="a(5)">5</button>
-
-<%--    <%}%>--%>
+<span class="span">
 </span>
 </body>
 </html>
