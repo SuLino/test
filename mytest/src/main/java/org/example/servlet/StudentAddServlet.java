@@ -2,6 +2,7 @@ package org.example.servlet;
 
 
 import org.apache.ibatis.session.SqlSession;
+import org.example.dao.studentdao;
 import org.example.entity.student;
 import org.example.util.MyBatisUtil;
 
@@ -25,23 +26,19 @@ public class StudentAddServlet extends HttpServlet {
         resp.setContentType("text/html;charset=utf-8");
         req.setCharacterEncoding("utf-8");
         SqlSession session = MyBatisUtil.getSession();
-        int count = session.selectOne("org.example.dao.studentdao.count");
-        if(count>80){
-            resp.getWriter().write("非法操作");
-            return;
-        }
+        studentdao mapper= session.getMapper(studentdao.class);
+        int count=mapper.count();
         Random random = new Random();
         for(int i=1;i<=10;i++){
             int i1 = random.nextInt(i+10);
-            session.insert("org.example.dao.studentdao.add",
-                        new student(count+i,"学生"+(i1+1),new Date(70+i1%10+i, i, 10+i),i%4+1));
-                session.commit();
+            student s=new student(count+i,"学生"+(i1+1),new Date(70+i1%10+i, i, 10+i),i%4+1);
+            mapper.add(s);
+            session.commit();
         }
 
         if(count%10>0)
             count=count/10+2;
-        else
-            count=count/10+1;
+        else count=count/10+1;
         System.out.println(count);
         MyBatisUtil.closeSession(session);
         resp.getWriter().print(count);

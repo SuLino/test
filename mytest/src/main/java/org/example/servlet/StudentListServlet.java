@@ -53,15 +53,10 @@ public class StudentListServlet extends HttpServlet {
         resp.getWriter().print(count);
     }
     void search(HttpServletResponse resp,SqlSession session,String studentName) throws IOException {
-        List<student> list;
-        List<student> list2=new ArrayList<>();
-        System.out.println(studentName);
-        list=session.selectList("org.example.dao.studentdao.list2");
-        for (org.example.entity.student student : list)
-            if (student.getName().equals(studentName))
-                list2.add(student);
+        studentdao mapper= session.getMapper(studentdao.class);
+        List<student> list=mapper.list2(studentName);
         Gson gson = new Gson();
-        String s = gson.toJson(list2);
+        String s = gson.toJson(list);
         resp.getWriter().write(s);
         resp.getWriter().flush();
     }

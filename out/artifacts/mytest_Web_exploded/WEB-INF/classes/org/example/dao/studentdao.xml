@@ -10,7 +10,7 @@
       select s.id ,s.name ,s.birth,clazz_id,c.name as Cname from student s left join clazz c on c.id= s.clazz_id limit #{param1},#{param2}
   </select>
   <select id="list2" resultType="org.example.entity.student"># 根据姓名查询并输出在页面上
-      select s.id ,s.name ,s.birth,clazz_id,c.name as Cname from student s left join clazz c on c.id= s.clazz_id
+      select s.id ,s.name ,s.birth,clazz_id,c.name as Cname from student s left join clazz c on c.id= s.clazz_id where s.name=#{name}
 </select>
     <select id="count" resultType="integer"># 根据姓名查询并输出在页面上
     select count(*) from student
